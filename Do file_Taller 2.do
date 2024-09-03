@@ -93,7 +93,7 @@ label variable limitaFamilia "Alguna vez ha tratado de limitarle el trato con la
 
 
 
-*-----Creamos un proceso automático (loop) que recodifique las variables ------
+*----- A. Creamos un proceso automático (loop) que recodifique las variables ------
 
 {
 * Crear una lista de variables originales, nuevas y sus respectivas etiquetas
@@ -222,7 +222,7 @@ tab ultimoAnoAcusaInfiel, m
 
 
 
-*----------------Calculo del alpha de Cronbach ------------------------------
+*----------------C. Calculo del alpha de Cronbach ------------------------------
 {
   alpha algunaVezCeloso algunaAcusaInfiel limitaFamilia saberDondeEsta vigilaGastoDinero ignorado ellaEnreunionesSociales consultaDecisionesI amenazaAbandonarla amenazaQuitarleNinos amenazaQuitarApoyoEcon algunaVezGolpeado algunaVezAmenazoArma algunaVezHaViolado ultimoAnoAcusaInfiel esposoConsumeSustancias, item /*inlcuyendo más  variables, mejora el resultado pero tiene sentido económico?*/
 
@@ -235,7 +235,7 @@ alpha algunaVezCeloso algunaAcusaInfiel limitaFamilia saberDondeEsta vigilaGasto
 
 
 
-*-----------------CREACIÓN DEL INDICADOR IVM----------------------------------
+*-----------------F. CREACIÓN DEL INDICADOR IVM----------------------------------
 
 * Opción 1: Creación del Índice Ponderado
 {
@@ -302,7 +302,9 @@ order ivm IVM_PCA
 }
 
 
-*------------------IVM por edad y nivel socioeconomico------------------------
+*------------------G. IVM por edad y nivel socioeconomico------------------------
+
+{
 
 corr ivm QH03 QHWLTHI5
 corr IVM_PCA QH03 QHWLTHI5
@@ -312,3 +314,4 @@ scatter ivm QH03
 
 graph matrix IVM_PCA QH03 QHWLTHI5, half
 scatter IVM_PCA QH03
+}
