@@ -4,41 +4,29 @@
 * 	POR: Laura Pardo, José E González, Julián Pulido  Luis Castellanos   	   *
 * 							6 de Mayo  DE 2024							       *
 * 							 	STATA 18.0									   *  
-*==============================================================================*clear all
-cap log close
-set more off
-cls 
-
-
-***Cd Julian
-cd "/Users/User/Library/CloudStorage/OneDrive-Universidaddelosandes/2024-2 Evaluación de Políticas Públicas/Talleres"
-
-use "/Users/User/Library/CloudStorage/OneDrive-Universidaddelosandes/2024-2 Evaluación de Políticas Públicas/Talleres/Taller 2/VIF_ENDS2010.dta"
-
-** Agreguen sus CD abajo :D*
-
-
+*==============================================================================*
 
 cls
 clear all
 cap log close
 set more off
 *________________________________________________________________________________
-
 *Establecemos un directorio de trabajo
 
+cd "/Users/User/Library/CloudStorage/OneDrive-Universidaddelosandes/2024-2 Evaluación de Políticas Públicas/Talleres/Taller 2"
+
 cd "C:\Users\Heitz\Desktop\Evaluación de Impacto  EGOB\Taller 2"
-
-/*_______________________________________________________________________________
-**************************		PUNTO 1			*********************************
-________________________________________________________________________________
-
-*/
 
 log using "taller2.log", replace /*Empezar el log file*/
 
 use "VIF_ENDS2010.dta", clear
 
+*_______________________________________________________________________________
+**************************		PUNTO 1			*********************************
+*________________________________________________________________________________
+
+*Codificación sin Loop
+{
 ***Qué datos contiene la base?**
 describe
 summarize 
@@ -101,13 +89,13 @@ replace limitaFamilia = 0 if limitaFamilia == 2
 
 label variable limitaFamilia "Alguna vez ha tratado de limitarle el trato con la familia: Sí=1, No=0"
 
+}
 
-*_______________________________________________________________________________
 
-*Creamos un proceso automático que recodifique las variables 
 
-*_______________________________________________________________________________
+*-----Creamos un proceso automático (loop) que recodifique las variables ------
 
+{
 * Crear una lista de variables originales, nuevas y sus respectivas etiquetas
 local original1 Q1103AA
 local original2 Q1103BA
@@ -226,15 +214,16 @@ tab algunaVezHaViolado,
 tab esposoConsumeSustancias ,m
 tab ultimoAnoAcusaInfiel, m
 
+}
 
 
 *Estadisticas Descriptivas
+*(POR COMPLETAR)
 
 
 
-
-*Calculo del alpha de Cronbach 
-
+*----------------Calculo del alpha de Cronbach ------------------------------
+{
   alpha algunaVezCeloso algunaAcusaInfiel limitaFamilia saberDondeEsta vigilaGastoDinero ignorado ellaEnreunionesSociales consultaDecisionesI amenazaAbandonarla amenazaQuitarleNinos amenazaQuitarApoyoEcon algunaVezGolpeado algunaVezAmenazoArma algunaVezHaViolado ultimoAnoAcusaInfiel esposoConsumeSustancias, item /*inlcuyendo más  variables, mejora el resultado pero tiene sentido económico?*/
 
 
@@ -242,3 +231,84 @@ tab ultimoAnoAcusaInfiel, m
 alpha algunaVezCeloso algunaAcusaInfiel limitaFamilia saberDondeEsta vigilaGastoDinero ignorado ellaEnreunionesSociales consultaDecisionesI amenazaAbandonarla amenazaQuitarleNinos amenazaQuitarApoyoEcon algunaVezGolpeado algunaVezAmenazoArma algunaVezHaViolado ultimoAnoAcusaInfiel, item /*inlcuyendo más  variables, mejora el resultado pero tiene sentido económico?*/
 
 *Nota: Aqui el ultimoAnoAcusaInfiel me saca 0.8217, si la eliminara deberia subir el alpha, pero eso no ocurre 
+}
+
+
+
+*-----------------CREACIÓN DEL INDICADOR IVM----------------------------------
+
+* Opción 1: Creación del Índice Ponderado
+{
+* Crear el índice ponderado por tres dimensiones: 
+	* 1. Amenazas ()
+	* 2. Maltrato Físico
+	
+	
+/* Variables de cada Dimensión:
+
+Psicologico
+	algunaVezCeloso
+	algunaAcusaInfiel
+	limitaFamilia
+	saberDondeEsta
+	vigilaGastoDinero
+	ignorado
+	ellaEnreunionesSociales
+	consultaDecisionesI
+	algunaVezHaViolado
+	ultimoAnoAcusaInfiel
+	esposoConsumeSustancias
+	
+Fisico
+	algunaVezGolpeado
+
+Amenaza
+	amenazaAbandonarla
+	amenazaQuitarleNinos
+	amenazaQuitarApoyoEcon
+	algunaVezAmenazoArma
+*/
+
+gen amenaza = 6.25*amenazaAbandonarla + 6.25*amenazaQuitarleNinos +	6.25*amenazaQuitarApoyoEcon + 6.25*algunaVezAmenazoArma
+
+gen mfisico= 6.25*algunaVezGolpeado 
+
+gen mpsicologico = 6.25*algunaVezCeloso + 6.25*algunaAcusaInfiel + 6.25*limitaFamilia + 6.25*saberDondeEsta + 6.25*vigilaGastoDinero + 6.25*ignorado + 6.25*ellaEnreunionesSociales + 6.25*consultaDecisionesI + 6.25*algunaVezHaViolado + 6.25*esposoConsumeSustancias
+
+
+*Se excluyó 6.25*ultimoAnoAcusaInfiel de la dimensión mpsicologico
+
+*CREACION IVM
+gen ivm= amenaza + mfisico + mpsicologico
+
+order ivm algunaVezCeloso algunaAcusaInfiel limitaFamilia saberDondeEsta vigilaGastoDinero ignorado ellaEnreunionesSociales consultaDecisionesI algunaVezHaViolado	ultimoAnoAcusaInfiel esposoConsumeSustancias algunaVezGolpeado amenazaAbandonarla amenazaQuitarleNinos amenazaQuitarApoyoEcon algunaVezAmenazoArma
+}
+
+* Opción 2: Creación del Índice usando PCA
+
+{
+* Paso 1: Verificación de la correlación entre las variables (opcional)
+corr algunaVezCeloso algunaAcusaInfiel limitaFamilia saberDondeEsta vigilaGastoDinero ignorado ellaEnreunionesSociales consultaDecisionesI algunaVezHaViolado esposoConsumeSustancias algunaVezGolpeado amenazaAbandonarla amenazaQuitarleNinos amenazaQuitarApoyoEcon algunaVezAmenazoArma
+
+* Paso 2: Ejecución del Análisis de Componentes Principales (PCA)
+pca algunaVezCeloso algunaAcusaInfiel limitaFamilia saberDondeEsta vigilaGastoDinero ignorado ellaEnreunionesSociales consultaDecisionesI algunaVezHaViolado esposoConsumeSustancias algunaVezGolpeado amenazaAbandonarla amenazaQuitarleNinos amenazaQuitarApoyoEcon algunaVezAmenazoArma
+
+* Paso 3: Predicción del índice basado en el primer componente principal
+predict IVM_PCA, score
+
+order ivm IVM_PCA
+
+
+}
+
+
+*------------------IVM por edad y nivel socioeconomico
+
+corr ivm QH03 QHWLTHI5
+corr IVM_PCA QH03 QHWLTHI5
+
+graph matrix ivm QH03 QHWLTHI5, half
+scatter ivm QH03
+
+graph matrix IVM_PCA QH03 QHWLTHI5, half
+scatter IVM_PCA QH03
