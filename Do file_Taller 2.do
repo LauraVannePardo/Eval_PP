@@ -302,7 +302,7 @@ order ivm IVM_PCA
 }
 
 
-*------------------IVM por edad y nivel socioeconomico
+*------------------IVM por edad y nivel socioeconomico------------------------
 
 corr ivm QH03 QHWLTHI5
 corr IVM_PCA QH03 QHWLTHI5
