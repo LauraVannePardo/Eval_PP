@@ -310,8 +310,9 @@ corr ivm QH03 QHWLTHI5
 corr IVM_PCA QH03 QHWLTHI5
 
 graph matrix ivm QH03 QHWLTHI5, half
-scatter ivm QH03
+twoway (scatter ivm QH03) (lfit ivm QH03)
 
 graph matrix IVM_PCA QH03 QHWLTHI5, half
 scatter IVM_PCA QH03
+
 }
