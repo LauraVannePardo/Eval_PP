@@ -235,7 +235,7 @@ alpha algunaVezCeloso algunaAcusaInfiel limitaFamilia saberDondeEsta vigilaGasto
 
 
 
-*-----------------F. CREACIÓN DEL INDICADOR IVM----------------------------------
+*-----------------F. CREACIÓN DEL ÍNDICE IVM----------------------------------
 
 * Opción 1: Creación del Índice Ponderado
 {
@@ -269,35 +269,22 @@ Amenaza
 	algunaVezAmenazoArma
 */
 
-gen amenaza = 6.25*amenazaAbandonarla + 6.25*amenazaQuitarleNinos +	6.25*amenazaQuitarApoyoEcon + 6.25*algunaVezAmenazoArma
+gen amenaza = 0.25 *amenazaAbandonarla + 0.25*amenazaQuitarleNinos + 0.25*amenazaQuitarApoyoEcon + 0.25*algunaVezAmenazoArma
 
-gen mfisico= 6.25*algunaVezGolpeado 
+gen mfisico= algunaVezGolpeado 
 
-gen mpsicologico = 6.25*algunaVezCeloso + 6.25*algunaAcusaInfiel + 6.25*limitaFamilia + 6.25*saberDondeEsta + 6.25*vigilaGastoDinero + 6.25*ignorado + 6.25*ellaEnreunionesSociales + 6.25*consultaDecisionesI + 6.25*algunaVezHaViolado + 6.25*esposoConsumeSustancias
+gen mpsicologico = 0.10*algunaVezCeloso + 0.10*algunaAcusaInfiel + 0.10*limitaFamilia + 0.10*saberDondeEsta + 0.10*vigilaGastoDinero + 0.10*ignorado + 0.10*ellaEnreunionesSociales + 0.10*consultaDecisionesI + 0.10*algunaVezHaViolado + 0.10*esposoConsumeSustancias
 
 
 *Se excluyó 6.25*ultimoAnoAcusaInfiel de la dimensión mpsicologico
 
 *CREACION IVM
-gen ivm= amenaza + mfisico + mpsicologico
+gen ivm= (amenaza*(1/3) + mfisico*(1/3) + mpsicologico*(1/3))*100
 
-order ivm algunaVezCeloso algunaAcusaInfiel limitaFamilia saberDondeEsta vigilaGastoDinero ignorado ellaEnreunionesSociales consultaDecisionesI algunaVezHaViolado	ultimoAnoAcusaInfiel esposoConsumeSustancias algunaVezGolpeado amenazaAbandonarla amenazaQuitarleNinos amenazaQuitarApoyoEcon algunaVezAmenazoArma
-}
-
-* Opción 2: Creación del Índice usando PCA
-
-{
-* Paso 1: Verificación de la correlación entre las variables (opcional)
-corr algunaVezCeloso algunaAcusaInfiel limitaFamilia saberDondeEsta vigilaGastoDinero ignorado ellaEnreunionesSociales consultaDecisionesI algunaVezHaViolado esposoConsumeSustancias algunaVezGolpeado amenazaAbandonarla amenazaQuitarleNinos amenazaQuitarApoyoEcon algunaVezAmenazoArma
-
-* Paso 2: Ejecución del Análisis de Componentes Principales (PCA)
-pca algunaVezCeloso algunaAcusaInfiel limitaFamilia saberDondeEsta vigilaGastoDinero ignorado ellaEnreunionesSociales consultaDecisionesI algunaVezHaViolado esposoConsumeSustancias algunaVezGolpeado amenazaAbandonarla amenazaQuitarleNinos amenazaQuitarApoyoEcon algunaVezAmenazoArma
-
-* Paso 3: Predicción del índice basado en el primer componente principal
-predict IVM_PCA, score
-
-order ivm IVM_PCA
-
+*Estadísticas Descriptivas
+tabstat ivm, statistics(mean sd min max median p25 p75)
+ssc install asdoc
+asdoc tabstat ivm, statistics(mean sd min max median p25 p75) save(ivm_descriptives.doc)
 
 }
 
@@ -305,14 +292,16 @@ order ivm IVM_PCA
 *------------------G. IVM por edad y nivel socioeconomico------------------------
 
 {
+*Creación de la tabla para IVM - Nivel Socieconomico
+asdoc tabstat ivm, statistics(mean sd min max median p25 p75) by(QHWLTHI5) save(ivm_NivelSocioec.doc)
 
-corr ivm QH03 QHWLTHI5
-corr IVM_PCA QH03 QHWLTHI5
-
-graph matrix ivm QH03 QHWLTHI5, half
-twoway (scatter ivm QH03) (lfit ivm QH03)
-
-graph matrix IVM_PCA QH03 QHWLTHI5, half
-scatter IVM_PCA QH03
+*Creación de la tabla para IVM - Grupos de EDAD
+egen grupo_edad = cut(QH03), at(13 22 31 40 50) icodes label
+asdoc tabstat ivm, statistics(mean sd min max median p25 p75) by(grupo_edad) save(ivm_grupoedad.doc)
 
 }
+
+
+
+
+
