@@ -2,7 +2,7 @@
 *				 		EVALUACION POLITICA PUBICA   2024-2					   *
 *							TALLER 2 DO file								   *
 * 	POR: Laura Pardo, José E González, Julián Pulido  Luis Castellanos   	   *
-* 							6 de Mayo  DE 2024							       *
+* 							8 de Septiembre  DE 2024							       *
 * 							 	STATA 18.0									   *  
 *==============================================================================*
 
@@ -13,9 +13,11 @@ set more off
 *________________________________________________________________________________
 *Establecemos un directorio de trabajo
 
-cd "/Users/User/Library/CloudStorage/OneDrive-Universidaddelosandes/2024-2 Evaluación de Políticas Públicas/Talleres/Taller 2"
+*cd "/Users/User/Library/CloudStorage/OneDrive-Universidaddelosandes/2024-2 Evaluación de Políticas Públicas/Talleres/Taller 2"
 
-cd "C:\Users\Heitz\Desktop\Evaluación de Impacto  EGOB\Taller 2"
+*cd "C:\Users\Heitz\Desktop\Evaluación de Impacto  EGOB\Taller 2"
+
+cd "C:\Users\POWER\OneDrive - Universidad de los andes\Economía Urbana\Talleres\Taller 2\Do"
 
 log using "taller2.log", replace /*Empezar el log file*/
 
@@ -234,7 +236,75 @@ asdoc tabstat ivm, statistics(mean sd min max median p25 p75) by(grupo_edad) sav
 
 }
 
+*--------------------------------------------------------------------------------
 
+*---------------- VALIDEZ CONVERGENTE--------------------------------------------
+*Disminución en la autoestima
+tab Q1110F
+gen dis_autoestima=1 if Q1110F==1
+replace dis_autoestima=0 if Q1110F==2
+tab Q1110F dis_autoestima
+
+*Enfermó fisicamente
+gen enfermo_fisicamente=1 if Q1110J==1
+replace enfermo_fisicamente=0 if Q1110J==2
+tab Q1110J enfermo_fisicamente
+
+*Enfermó mentalmente
+gen enfermo_emocionalmente=1 if Q1110K==1
+replace enfermo_emocionalmente=0 if Q1110K==2
+tab Q1110K enfermo_emocionalmente
+
+*Frecuencia con la que ha sido agregida
+gen frecuencia_agrecion=0 if Q1129==3
+replace frecuencia_agrecion=1 if Q1129==2
+replace frecuencia_agrecion=2 if Q1129==1
+
+*Violencia conyugal
+gen violencia_conyugal=(Q1126==1) //Indica que ha pensado en separarse por violencia conyugal
+
+
+label variable dis_autoestima "Disminución en autoestima por lo que hizo el esposo"
+label variable enfermo_fisicamente "Enfermo fisicamente por lo que hizo el esposo"
+label variable enfermo_fisicamente "Enfermo mentalmente por lo que hizo el esposo"
+label variable frecuencia_agrecion "Frecuencia con la que ha sido agredida (0 a 2)"
+label variable violencia_conyugal "Ha pensado separarse por violencia conyugal"
+
+*corr dis_autoestima ivm
+*reg dis_autoestima ivm, r
+
+* Crear una tabla de correlaciones y guardar en un archivo de Word
+* Utilizamos pwcorr para obtener correlaciones y outreg2 para exportarlas
+pwcorr dis_autoestima enfermo_fisicamente enfermo_emocionalmente violencia_conyugal ivm, sig
+
+global var_convergente dis_autoestima enfermo_fisicamente enfermo_emocionalmente frecuencia_agrecion violencia_conyugal
+
+foreach var of global var_convergente{
+	sum `var'
+	//tab `var'
+}
+
+*Analisis de correlación por medio de MCO.
+
+* Loop para realizar regresiones y guardar los resultados
+foreach var of global var_convergente {
+    * Realizar regresión con errores robustos
+    reg `var' ivm, robust
+	outreg2 using "Tabla_regresion_corregida.doc", append se ///
+title ("Modelo de probabilidad lineal como IVM como regresora") ///
+ctitle("`var'") label word nonote addnote("Desviacion estandar en parentesis. Se usaron errores estandar robustos en las estimaciones parametricas. *** p<0.01, ** p<0.05, * p<0.1.") nocons bdec(3) nor2
+}
+
+log close
+exit
+
+
+
+
+
+
+
+ 
 
 
 
