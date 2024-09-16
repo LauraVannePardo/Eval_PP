@@ -217,16 +217,35 @@ test ${covs}
 *Punto 5 
 *Calcule el impacto del programa sobre si el hogar tenía una cuenta activa de bKash (active_account) y dos resultados de interés: suficiencia calórica  (normal_calorie_sufficiency), y asistencia escolar (attendance).  Para cada variable de resultado, estimen primero los resultados sin controles (primera columna), y después controlando por las siguientes variables: sexo, edad, si el jefe de hogar completó primaria, y el tamaño del hogar  (segunda columna de cada resultado).
 {
-*Regresión básica
-reg active_account treatment,r
-reg normal_calorie_sufficiency treatment,r
-reg attendance treatment, r
-
-*Regresión con controles
 global controles hohh_female hohh_age hohh_completed_primary household_size_b
- 
-reg active_account treatment ${controles}
-reg normal_calorie_sufficiency treatment ${controles}
-reg attendance treatment ${controles}
+
+*Regresión básica - Cuenta activa
+reg active_account treatment,r
+est sto r1 
+
+*Regresión con controles - Cuenta activa 
+reg active_account treatment ${controles},r
+est sto r4 
+
+*Regresión básica - Suficiencia Calorica
+reg normal_calorie_sufficiency treatment,r
+est sto r2
+
+*Regresión con controles - Suficiencia Calorica
+reg normal_calorie_sufficiency treatment ${controles},r
+est sto r5
+
+
+*Regresión básica - Asistencia escolar
+reg attendance treatment, r
+est sto r3
+
+*Regresión con controles - Asistencia escolar
+reg attendance treatment ${controles},r
+est sto r6 
+
+
+esttab r* , b(3) se(3) star(* 0.10 ** 0.05 *** 0.01) stats(N r2) drop(_cons ${controles}), using "resultados.doc",rtf replace
+
 }
 
