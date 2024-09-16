@@ -13,9 +13,11 @@ set more off
 *________________________________________________________________________________
 *Establecemos un directorio de trabajo
 
-*cd "/Users/User/Library/CloudStorage/OneDrive-Universidaddelosandes/2024-2 Evaluación de Políticas Públicas/Talleres/Taller 2"
-
+*CD Laura
 cd "C:\Users\Heitz\Desktop\Evaluación de Impacto  EGOB\Taller 3"
+
+*CD Julian
+cd"/Users/User/Library/CloudStorage/OneDrive-Universidaddelosandes/2024-2 Evaluación de Políticas Públicas/Talleres/Taller 3-Evaluación Experimental/"
 
 *Rellenar directorio de trabajo para revisión
 *cd ""
@@ -24,15 +26,11 @@ log using "taller3_grupo4.log", replace /*Empezar el log file*/
 
 use "taller_3_base - Copy.dta", clear
 
-
-
 *ssc install outreg, replace
-
-*hola
 
 *_______________________________________________________________________________
 
-
+{
 
 tab anymobile_b, m
 
@@ -135,7 +133,7 @@ tab child_laborer_b, m
 
 tab migration_for_work_b, m
 
-
+}
 
 *________________________________________________________________________________
 
@@ -157,6 +155,7 @@ esttab using "tabla_balance.doc", cells("mean sd") label nodepvar replace
 *Otro metodo 
 * 1. Balance muestral
 * -------------------------------------------------------------------------------
+{
 global covs "anymobile_b num_self_employed_b daily_wage_b mean_annual_wage_inc_b num_wage_laborers_b num_migrants_b migrant_annual_wage_inc_b annual_business_inc_b self_employed_b saved_past_year_b savings_amt_b lent_money_outstanding_b household_size_b_b num_children_b ln_total_annual_wage_inc_b total_annual_wage_inc_1_b outstanding_loanfrac_b tot_loanvalue_1_b log_tot_loanvalue_1_b productivity_b below_upoverty_line_b below_ipoverty_line_b below_ipoverty_line2_b tot_hh_income_b daily_hh_income_b daily_pc_income_b below_upoverty_line2_b tot_savings_b log_tot_savings_1_b any_savings_b medical_fee_pc_b wage_labor_b poverty_gap_b poverty_gap_sq_b child_laborer_b migration_for_work_b household_size_b"
 
 di "${covs}"
@@ -213,7 +212,21 @@ test ${covs}
 		Note que las pruebas t de esta regresión son distintas a las 
 			de la diferencia de medias											*/
 		
+}
 
+*Punto 5 
+*Calcule el impacto del programa sobre si el hogar tenía una cuenta activa de bKash (active_account) y dos resultados de interés: suficiencia calórica  (normal_calorie_sufficiency), y asistencia escolar (attendance).  Para cada variable de resultado, estimen primero los resultados sin controles (primera columna), y después controlando por las siguientes variables: sexo, edad, si el jefe de hogar completó primaria, y el tamaño del hogar  (segunda columna de cada resultado).
+{
+*Regresión básica
+reg active_account treatment,r
+reg normal_calorie_sufficiency treatment,r
+reg attendance treatment, r
 
-
+*Regresión con controles
+global controles hohh_female hohh_age hohh_completed_primary household_size_b
+ 
+reg active_account treatment ${controles}
+reg normal_calorie_sufficiency treatment ${controles}
+reg attendance treatment ${controles}
+}
 
