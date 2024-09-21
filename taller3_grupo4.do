@@ -34,39 +34,50 @@ use "taller_3_base - Copy.dta", clear
 * 1. Balance muestral
 * -------------------------------------------------------------------------------
 {
-
+// Ejecuta los T-tests solo con las variables seleccionadas
 table (command) (result), ///
-command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
-  Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest daily_wage_b, by(treatment)) ///
-command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
-  Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest mean_annual_wage_inc_b, by(treatment)) ///
-command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
-  Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest num_migrants_b, by(treatment)) ///
-command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
-  Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest migrant_annual_wage_inc_b, by(treatment)) ///
-command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
-  Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest num_migrants_b, by(treatment)) ///
-command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
-  Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest saved_past_year_b, by(treatment)) ///
-command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
-  Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest num_children_b, by(treatment)) ///
-command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
-  Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest ln_total_annual_wage_inc_b, by(treatment)) ///
-command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
-  Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest total_annual_wage_inc_1_b, by(treatment)) ///
-command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
-  Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest log_tot_loanvalue_1_b, by(treatment)) ///
-command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
-  Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest productivity_b, by(treatment)) ///
-command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
-  Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest below_ipoverty_line_b, by(treatment)) ///
-command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
-  Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest household_size_b, by(treatment)) ///
-nformat(%3.2f) stars(p_value 0.1 "*" 0.05 "**" 0.01 "***", shownote) name(t_test1) replace
+    command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
+    Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest mean_annual_wage_inc_b, by(treatment)) ///
+    command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
+    Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest num_migrants_b, by(treatment)) ///
+    command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
+    Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest saved_past_year_b, by(treatment)) ///
+    command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
+    Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest num_children_b, by(treatment)) ///
+    command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
+    Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest log_tot_loanvalue_1_b, by(treatment)) ///
+    command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
+    Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest productivity_b, by(treatment)) ///
+    command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
+    Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest below_ipoverty_line_b, by(treatment)) ///
+    command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
+    Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest household_size_b, by(treatment)) ///
+    command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
+    Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest anymobile, by(treatment)) ///
+    command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
+    Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest normal_meals_b, by(treatment)) ///
+    command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
+    Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest normal_calories_b, by(treatment)) ///
+    command(media_tratado=r(mu_2) de_tratado=r(sd_2) media_control=r(mu_1) de_control=r(sd_1) ///
+    Difference=(r(mu_2) - r(mu_1)) p_value=r(p): ttest consumption_value_b, by(treatment)) ///
+    nformat(%3.2f) stars(p_value 0.1 "*" 0.05 "**" 0.01 "***", shownote) name(t_test1) replace
 
 // Ajusta la tabla después de correr los comandos
 collect set t_test1
-collect label levels command 1 "Salario Diario" 2 "Media del Salario Anual" 3 "Numero de migrantes" 4 "Salario Anual del Migrante" 5 "Numero de Migrantes" 6 "Ahorrado en el pasado año" 7 "Numero de Niños en hogar" 8 "Logaritmo salario anual" 9 "Salario total Anual" 10 "Logaritmo total Prestamo" 11 "Productividad" 12 "Debajo de la linea de Pobreza" 13 "Tamaño del hogar", modify
+collect label levels command ///
+    1 "Media del Salario Anual" ///
+    2 "Numero de migrantes" ///
+    3 "Ahorrado en el pasado año" ///
+    4 "Numero de Niños en hogar" ///
+    5 "Logaritmo total Prestamo" ///
+    6 "Productividad" ///
+    7 "Debajo de la linea de Pobreza" ///
+    8 "Tamaño del hogar" ///
+    9 "Cualquier Móvil" ///
+    10 "Comidas Normales" ///
+    11 "Calorías Normales" ///
+    12 "Valor de Consumo", modify
+
 collect title "Tabla. T-tests comparación tratados vs control"
 collect preview
 collect style cell command[2 4]#result[media_tratado de_tratado media_control de_control Difference p_value stars]
