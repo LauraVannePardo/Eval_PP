@@ -32,6 +32,7 @@ use "taller_3_base - Copy.dta", clear
 *________________________________________________________________________________
 
 * 1. Balance muestral
+
 * -------------------------------------------------------------------------------
 {
 // Ejecuta los T-tests solo con las variables seleccionadas
