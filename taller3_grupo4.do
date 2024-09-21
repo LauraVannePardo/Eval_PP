@@ -88,22 +88,42 @@ collect export t_test1.docx, replace
 	
 *) Enfoque 2: Análisis de regresión		
 
-reg treatment daily_wage_b
+reg treatment mean_annual_wage_inc_b
 eststo M1
 
-reg treatment mean_annual_wage_inc_b
+reg treatment num_migrants_b
 eststo M2
 
-reg treatment num_migrants_b
+reg treatment saved_past_year_b
 eststo M3
 
+reg treatment num_children_b
+eststo M4
+reg treatment log_tot_loanvalue_1_b
+eststo M5
+reg treatment productivity_b
+eststo M6
+reg treatment below_ipoverty_line_b
+eststo M7
+reg treatment household_size_b
+eststo M8
+reg treatment anymobile
+eststo M9
+reg treatment normal_meals_b
+eststo M10
+reg treatment normal_calories_b
+eststo M11
+reg treatment consumption_value_b
+eststo M12
+
+
 // Exportar la tabla con el título
-outreg2 [M1 M2 M3] using 1.doc, title("Tabla 2. Tabla de balance") replace
+outreg2 [M1 M2 M3 M4 M5 M6 M7 M8 M9 M10 M11 M12] using regressions.doc, title("Tabla 2. Tabla de balance") replace
 
 }
 
 *Punto 5 -----------------------------------------------------------------------
-*Calcule el impacto del programa sobre si el hogar tenía una cuenta activa de bKash (active_account) y dos resultados de interés: suficiencia calórica  (normal_calorie_sufficiency), y asistencia escolar (attendance).  Para cada variable de resultado, estimen primero los resultados sin controles (primera columna), y después controlando por las siguientes variables: sexo, edad, si el jefe de hogar completó primaria, y el tamaño del hogar  (segunda columna de cada resultado).
+*Calcule el impacto del 	programa sobre si el hogar tenía una cuenta activa de bKash (active_account) y dos resultados de interés: suficiencia calórica  (normal_calorie_sufficiency), y asistencia escolar (attendance).  Para cada variable de resultado, estimen primero los resultados sin controles (primera columna), y después controlando por las siguientes variables: sexo, edad, si el jefe de hogar completó primaria, y el tamaño del hogar  (segunda columna de cada resultado).
 {
 global controles hohh_female hohh_age hohh_completed_primary household_size_b
 
